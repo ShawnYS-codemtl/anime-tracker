@@ -7,7 +7,13 @@
 
 import Foundation
 
-struct Anime: Identifiable, Decodable {
+enum WatchStatus: String, CaseIterable, Codable {
+    case notStarted = "Not Started"
+    case watching = "Watching"
+    case finished = "Finished"
+}
+
+struct Anime: Identifiable, Decodable, Equatable, Encodable {
     var id: Int
     var title: String
     var imageUrl: String
@@ -18,4 +24,5 @@ struct Anime: Identifiable, Decodable {
     var studio: String
     var seasonYear: Int?
     var trailerUrl: String?
+    var watchStatus: WatchStatus = .notStarted
 }

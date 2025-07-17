@@ -12,32 +12,30 @@ struct AnimeDiscover: View {
     @State private var results: [Anime] = []
 
     var body: some View {
-        NavigationView {
-            VStack {
-                TextField("Search anime...", text: $searchText, onCommit: search)
-                    .padding()
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+        VStack {
+            TextField("Search anime...", text: $searchText, onCommit: search)
+                .padding()
+                .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                List(results) { anime in
-                    NavigationLink(destination: AnimeDetailView(anime: anime)) {
-                        HStack {
-                            AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                                image.resizable()
-                            } placeholder: {
-                                ProgressView()
-                            }
-                            .frame(width: 60, height: 90)
-                            .cornerRadius(8)
-                            
-                            Text(anime.title)
-                                .font(.headline)
-                                .padding(.leading, 8)
+            List(results) { anime in
+                NavigationLink(destination: AnimeDetailView(anime: anime)) {
+                    HStack {
+                        AsyncImage(url: URL(string: anime.imageUrl)) { image in
+                            image.resizable()
+                        } placeholder: {
+                            ProgressView()
                         }
+                        .frame(width: 60, height: 90)
+                        .cornerRadius(8)
+                        
+                        Text(anime.title)
+                            .font(.headline)
+                            .padding(.leading, 8)
                     }
                 }
             }
-            .navigationTitle("Anime Search")
         }
+        .navigationTitle("Anime Search")
     }
 
     func search() {
@@ -50,5 +48,6 @@ struct AnimeDiscover: View {
 }
 
 #Preview {
-    ContentView()
+    MainView()
+        .environmentObject(AnimeViewModel())
 }

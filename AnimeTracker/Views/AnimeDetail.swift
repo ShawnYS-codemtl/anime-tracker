@@ -9,17 +9,23 @@ import SwiftUI
 
 struct AnimeDetailView: View {
     let anime: Anime
-
+    
+    @EnvironmentObject var viewModel: AnimeViewModel
+    var isPreview: Bool {
+            ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
+                if !isPreview {
+                    AsyncImage(url: URL(string: anime.imageUrl)) { image in
+                        image.resizable()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .aspectRatio(contentMode: .fit)
+                    .cornerRadius(12)
                 }
-                .aspectRatio(contentMode: .fit)
-                .cornerRadius(12)
                 
                 Text(anime.title)
                     .font(.title)
@@ -42,9 +48,26 @@ struct AnimeDetailView: View {
                     }
 
                     if let trailer = anime.trailerUrl {
-                        Link("Watch Trailer", destination: URL(string: trailer)!)
-                            .foregroundColor(.blue)
-                            .underline()
+                        Link(destination: URL(string: trailer)!) {
+                            Text("▶ Watch Trailer")
+                                .fontWeight(.semibold)
+                                .padding(8)
+                                .background(Color.blue.opacity(0.1))
+                                .cornerRadius(8)
+                        }
+                    }
+                    Button(action: {
+                        if viewModel.isInWatchlist(anime) {
+                            viewModel.removeFromWatchlist(anime)
+                        } else {
+                            viewModel.addToWatchlist(anime)
+                        }
+                    }) {
+                        Text(viewModel.isInWatchlist(anime) ? "Remove from Watchlist" : "Add to Watchlist")
+                            .padding()
+                            .background(viewModel.isInWatchlist(anime) ? Color.red : Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
                     }
                 }
                 .font(.subheadline)
@@ -57,7 +80,32 @@ struct AnimeDetailView: View {
         }
         .navigationTitle(anime.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if viewModel.isInWatchlist(anime) {
+                    Menu {
+                        ForEach(WatchStatus.allCases, id: \.self) { status in
+                            Button(action: {
+                                viewModel.updateStatus(for: anime, to: status)
+                            }) {
+                                Text(status.rawValue)
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                    }
+                } else {
+                    Button(action: {
+                        viewModel.addToWatchlist(anime)
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+        }
+
     }
+    
 
     // Remove HTML tags from AniList's description
     func stripHTML(from html: String) -> String {
@@ -84,7 +132,7 @@ struct AnimeDetailView: View {
     AnimeDetailView(anime: Anime(
         id: 1,
         title: "Attack on Titan",
-        imageUrl: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-B6pgDEBuwLOr.jpg",
+        imageUrl: "aot_preview",
         description: "After his hometown is destroyed and his mother is killed, young Eren Yeager joins the military to fight the Titans.",
         episodes: 25,
         averageScore: 85,
@@ -93,4 +141,5 @@ struct AnimeDetailView: View {
         seasonYear: 2013,
         trailerUrl: "https://youtube.com/watch?v=MGRm4IzK1SQ"
     ))
+    .environmentObject(AnimeViewModel()) 
 }

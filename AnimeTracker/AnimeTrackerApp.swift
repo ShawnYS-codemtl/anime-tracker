@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct AnimeTrackerApp: App {
+    @StateObject var viewModel = AnimeViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
+                .environmentObject(viewModel)
         }
     }
 }
