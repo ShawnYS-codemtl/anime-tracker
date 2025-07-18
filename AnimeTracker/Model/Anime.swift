@@ -25,4 +25,6 @@ struct Anime: Identifiable, Decodable, Equatable, Encodable {
     var seasonYear: Int?
     var trailerUrl: String?
     var watchStatus: WatchStatus = .notStarted
+    var currentEpisode: Int = 1
+    var personalRating: Double = 0.0
 }

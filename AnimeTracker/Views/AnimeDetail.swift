@@ -11,21 +11,27 @@ struct AnimeDetailView: View {
     let anime: Anime
     
     @EnvironmentObject var viewModel: AnimeViewModel
+    @State private var localEpisode: Int
+
+    init(anime: Anime) {
+        self.anime = anime
+        _localEpisode = State(initialValue: anime.currentEpisode)
+    }
+    
     var isPreview: Bool {
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
         }
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                if !isPreview {
-                    AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                        image.resizable()
-                    } placeholder: {
-                        ProgressView()
-                    }
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(12)
+                AsyncImage(url: URL(string: anime.imageUrl)) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
                 }
+                .aspectRatio(contentMode: .fit)
+                .cornerRadius(12)
+                
                 
                 Text(anime.title)
                     .font(.title)
@@ -56,25 +62,28 @@ struct AnimeDetailView: View {
                                 .cornerRadius(8)
                         }
                     }
-                    Button(action: {
-                        if viewModel.isInWatchlist(anime) {
-                            viewModel.removeFromWatchlist(anime)
-                        } else {
-                            viewModel.addToWatchlist(anime)
-                        }
-                    }) {
-                        Text(viewModel.isInWatchlist(anime) ? "Remove from Watchlist" : "Add to Watchlist")
-                            .padding()
-                            .background(viewModel.isInWatchlist(anime) ? Color.red : Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                    }
                 }
                 .font(.subheadline)
                 Divider()
 
                 Text(stripHTML(from: anime.description))
                     .font(.body)
+                
+                Divider()
+                
+                if viewModel.watchlist.contains(where: { $0.id == anime.id }) {
+                    Stepper(value: $localEpisode, in: 0...(anime.episodes ?? 999)) {
+                        Text("Episode \(localEpisode)")
+                    }
+                    .padding()
+                    .onChange(of: localEpisode) { oldValue, newValue in
+                        viewModel.updateEpisode(for: anime, to: newValue)
+                    }
+                }
+                if viewModel.isFinished(anime),
+                   let index = viewModel.watchlist.firstIndex(where: { $0.id == anime.id }) {
+                    RatingSlider(rating: $viewModel.watchlist[index].personalRating)
+                }
             }
             .padding()
         }
@@ -90,6 +99,12 @@ struct AnimeDetailView: View {
                             }) {
                                 Text(status.rawValue)
                             }
+                        }
+
+                        Button(role: .destructive) {
+                            viewModel.removeFromWatchlist(anime)
+                        } label: {
+                            Label("Remove", systemImage: "trash")
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
@@ -128,18 +143,3 @@ struct AnimeDetailView: View {
     }
 }
 
-#Preview {
-    AnimeDetailView(anime: Anime(
-        id: 1,
-        title: "Attack on Titan",
-        imageUrl: "aot_preview",
-        description: "After his hometown is destroyed and his mother is killed, young Eren Yeager joins the military to fight the Titans.",
-        episodes: 25,
-        averageScore: 85,
-        genres: ["Action", "Drama", "Fantasy"],
-        studio: "Wit Studio",
-        seasonYear: 2013,
-        trailerUrl: "https://youtube.com/watch?v=MGRm4IzK1SQ"
-    ))
-    .environmentObject(AnimeViewModel()) 
-}

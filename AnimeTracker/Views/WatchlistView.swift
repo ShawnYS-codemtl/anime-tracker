@@ -9,52 +9,69 @@ import SwiftUI
 
 struct WatchlistView: View {
     @EnvironmentObject var viewModel: AnimeViewModel
+    @State private var expandedSections: Set<WatchStatus> = [.watching, .notStarted, .finished]
+
 
     var body: some View {
-        List(viewModel.watchlist) { anime in
-                    NavigationLink(destination: AnimeDetailView(anime: anime)
-                                    .environmentObject(viewModel)) {
-                        HStack {
-                            AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                                image.resizable()
-                            } placeholder: {
-                                Color.gray
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(WatchStatus.allCases, id: \.self) { status in
+                    let filtered = viewModel.watchlist.filter { $0.watchStatus == status }
+                    DisclosureGroup(
+                        isExpanded: Binding(
+                                get: { expandedSections.contains(status) },
+                                set: { isExpanding in
+                                    if isExpanding {
+                                        expandedSections.insert(status)
+                                    } else {
+                                        expandedSections.remove(status)
+                                    }
+                                }
+                            ),
+                        content: {
+                            if filtered.isEmpty {
+                                Text("No anime in this section.")
+                                    .foregroundColor(.gray)
+                                    .padding(.vertical, 8)
+                                    .padding(.leading, 8)
+                            } else {
+                                VStack(spacing: 8) {
+                                    ForEach(viewModel.watchlist.filter { $0.watchStatus == status }) { anime in
+                                        NavigationLink (destination: AnimeDetailView(anime: anime)) {
+                                            WatchlistRow(anime: anime)
+                                        }
+                                    }
+                                }
+                                .padding(.leading, 8)
                             }
-                            .frame(width: 50, height: 70)
-                            .cornerRadius(8)
-
-                            Text(anime.title)
-                                .font(.headline)
+                        },
+                        label: {
+                            HStack {
+                                        Text(status.rawValue)
+                                            .font(.title3)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                        Text("\(filtered.count)")
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .contentShape(Rectangle()) // makes whole row tappable
                         }
-                    }
+                    )
+                    .padding(.horizontal)
+                            
                 }
-        .navigationTitle("Watchlist")
+            }
+            .padding(.top)
+        }
+        .navigationTitle("Your Watchlist")
     }
 }
+
+
 
 #Preview {
-    NavigationView {
-        WatchlistView()
-            .environmentObject(mockViewModel)
-    }
+    MainView()
+        .environmentObject(AnimeViewModel())
+    
 }
 
-private var mockViewModel: AnimeViewModel {
-    let viewModel = AnimeViewModel()
-
-    let exampleAnime = Anime(
-        id: 1,
-        title: "Attack on Titan",
-        imageUrl: "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-B6pgDEBuwLOr.jpg",
-        description: "After his hometown is destroyed and his mother is killed, Eren joins the military to fight Titans.",
-        episodes: 25,
-        averageScore: 85,
-        genres: ["Action", "Drama", "Fantasy"],
-        studio: "Wit Studio",
-        seasonYear: 2013,
-        trailerUrl: "https://youtube.com/watch?v=MGRm4IzK1SQ"
-    )
-
-    viewModel.addToWatchlist(exampleAnime)
-    return viewModel
-}

@@ -30,7 +30,7 @@ class AnimeViewModel: ObservableObject {
     }
 
     func isInWatchlist(_ anime: Anime) -> Bool {
-        return watchlist.contains(where: { $0.id == anime.id })
+        watchlist.contains(where: { $0.id == anime.id })
     }
 
     private func saveWatchlist() {
@@ -50,6 +50,21 @@ class AnimeViewModel: ObservableObject {
         if let index = watchlist.firstIndex(where: { $0.id == anime.id }) {
             watchlist[index].watchStatus = status
         }
+    }
+    
+    func updateEpisode(for anime: Anime, to episode: Int) {
+        if let index = watchlist.firstIndex(where: { $0.id == anime.id }) {
+            watchlist[index].currentEpisode = episode
+        }
+    }
+    
+    func updateRating(for anime: Anime, to rating: Double) {
+        guard let index = watchlist.firstIndex(where: { $0.id == anime.id }) else { return }
+        watchlist[index].personalRating = rating
+    }
+    
+    func isFinished(_ anime: Anime) -> Bool {
+        return watchlist.first(where: { $0.id == anime.id })?.watchStatus == .finished
     }
 }
 
