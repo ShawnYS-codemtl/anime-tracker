@@ -13,7 +13,7 @@ enum WatchStatus: String, CaseIterable, Codable {
     case finished = "Finished"
 }
 
-struct Anime: Identifiable, Decodable, Equatable, Encodable {
+struct Anime: Identifiable, Equatable, Codable {
     var id: Int
     var title: String
     var imageUrl: String
