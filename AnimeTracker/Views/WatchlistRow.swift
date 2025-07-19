@@ -6,19 +6,21 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct WatchlistRow: View {
     let anime: Anime
     
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                image.resizable()
-            } placeholder: {
-                Color.gray
-            }
-            .frame(width: 50, height: 70)
-            .cornerRadius(6)
+            KFImage(URL(string: anime.imageUrl))
+                            .resizable()
+                            .placeholder {
+                                ProgressView()
+                            }
+                            .fade(duration: 0.25)
+                            .frame(width: 60, height: 90)
+                            .cornerRadius(8)
             
             VStack(alignment: .leading) {
                 Text(anime.title)

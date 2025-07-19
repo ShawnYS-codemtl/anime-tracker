@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A6E70F2D2E2ACD030069C828 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A6E70F2C2E2ACD030069C828 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		A6E70EEF2E26EB480069C828 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6E70F2D2E2ACD030069C828 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = AnimeTracker;
 			packageProductDependencies = (
+				A6E70F2C2E2ACD030069C828 /* Kingfisher */,
 			);
 			productName = AnimeTracker;
 			productReference = A6E70EDE2E26EB450069C828 /* AnimeTracker.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = A6E70ED52E26EB450069C828;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A6E70F2B2E2ACD030069C828 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A6E70EDF2E26EB450069C828 /* Products */;
 			projectDirPath = "";
@@ -552,6 +561,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A6E70F2B2E2ACD030069C828 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A6E70F2C2E2ACD030069C828 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A6E70F2B2E2ACD030069C828 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A6E70ED62E26EB450069C828 /* Project object */;
 }

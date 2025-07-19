@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct AnimeDetailView: View {
     let anime: Anime
@@ -24,14 +25,13 @@ struct AnimeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                    image.resizable()
-                } placeholder: {
-                    ProgressView()
-                }
-                .aspectRatio(contentMode: .fit)
-                .cornerRadius(12)
-                
+                KFImage(URL(string: anime.imageUrl))
+                            .resizable()
+                            .placeholder {
+                                ProgressView()
+                            }
+                            .aspectRatio(contentMode: .fit)
+                            .cornerRadius(12)
                 
                 Text(anime.title)
                     .font(.title)

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct AnimeDiscover: View {
     @State private var searchText = ""
@@ -20,13 +21,14 @@ struct AnimeDiscover: View {
             List(results) { anime in
                 NavigationLink(destination: AnimeDetailView(anime: anime)) {
                     HStack {
-                        AsyncImage(url: URL(string: anime.imageUrl)) { image in
-                            image.resizable()
-                        } placeholder: {
-                            ProgressView()
-                        }
-                        .frame(width: 60, height: 90)
-                        .cornerRadius(8)
+                        KFImage(URL(string: anime.imageUrl))
+                                        .resizable()
+                                        .placeholder {
+                                            ProgressView()
+                                        }
+                                        .fade(duration: 0.25)
+                                        .frame(width: 60, height: 90)
+                                        .cornerRadius(8)
                         
                         Text(anime.title)
                             .font(.headline)
