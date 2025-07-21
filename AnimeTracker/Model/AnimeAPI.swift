@@ -14,7 +14,7 @@ struct AniListResponse: Decodable {
         var coverImage: CoverImage
         let description: String?
         let episodes: Int?
-        let averageScore: Int?
+        let averageScore: Double?
         let genres: [String]
         let studios: Studios
         let seasonYear: Int?

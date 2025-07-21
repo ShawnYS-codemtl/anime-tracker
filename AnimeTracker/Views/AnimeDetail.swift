@@ -43,7 +43,7 @@ struct AnimeDetailView: View {
                     }
 
                     if let score = anime.averageScore {
-                        Text("Score: \(score)/100")
+                        Text("Score: \(String(format: "%.2f", score))/100")
                     }
 
                     Text("Genres: \(anime.genres.joined(separator: ", "))")

@@ -19,7 +19,7 @@ struct Anime: Identifiable, Equatable, Codable {
     var imageUrl: String
     var description: String
     var episodes: Int?
-    var averageScore: Int?
+    var averageScore: Double?
     var genres: [String]
     var studio: String
     var seasonYear: Int?
