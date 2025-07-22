@@ -27,24 +27,8 @@ struct JikanAnime: Codable {
     let studios: [JikanStudio]?
     
     func toAnime() -> Anime {
-            Anime(
-                id: mal_id,
-                title: title,
-                imageUrl: images.jpg.image_url,
-                description: synopsis ?? "",
-                episodes: episodes ?? 0,
-                averageScore: score ?? 0.0,
-                genres: genres?.map { $0.name } ?? [],
-                studio: studios?.first?.name ?? "",
-                seasonYear: year ?? 0,
-                trailerUrl: trailer?.url,
-                watchStatus: .notStarted,
-                currentEpisode: 0,
-                personalRating: 0.0
-            )
-        }
-    
-    
+        Anime(from: self)
+    }
 }
 
 struct JikanImages: Codable {

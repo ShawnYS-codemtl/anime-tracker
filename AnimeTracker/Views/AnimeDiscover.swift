@@ -22,12 +22,12 @@ struct AnimeDiscover: View {
                         DiscoverSection(title: "Now Airing", animeList: viewModel.nowAiring)
                         DiscoverSection(title: "Upcoming", animeList: viewModel.upcoming)
                         DiscoverSection(title: "Top Rated", animeList: viewModel.topRated)
+                        
                         // Add more sections as needed
                     }
                     .padding(.top)
                 }
                 .onAppear {
-                    print("onAppear triggered")
                     Task {
                         await viewModel.fetchTrending()
                         await viewModel.fetchNowAiring()

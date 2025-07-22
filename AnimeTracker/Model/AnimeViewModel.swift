@@ -10,6 +10,10 @@ import Foundation
 
 class AnimeViewModel: ObservableObject {
     @Published var watchlist: [Anime] = []
+    
+    struct JikanAnimeDetailResponse: Codable {
+        let data: JikanAnime
+    }
 
     private let watchlistKey = "watchlist"
     
@@ -80,6 +84,20 @@ class AnimeViewModel: ObservableObject {
     
     func isFinished(_ anime: Anime) -> Bool {
         return watchlist.first(where: { $0.id == anime.id })?.watchStatus == .finished
+    }
+    
+    func fetchAnimeDetails(id: Int) async -> Anime? {
+        let urlString = "https://api.jikan.moe/v4/anime/\(id)/full"
+        guard let url = URL(string: urlString) else { return nil }
+
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decodedResponse = try JSONDecoder().decode(JikanAnimeDetailResponse.self, from: data)
+            return Anime(from: decodedResponse.data)
+        } catch {
+            print("Failed to fetch full anime: \(error)")
+            return nil
+        }
     }
 }
 

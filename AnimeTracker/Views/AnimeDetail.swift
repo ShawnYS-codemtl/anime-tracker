@@ -12,6 +12,8 @@ struct AnimeDetailView: View {
     let anime: Anime
     
     @EnvironmentObject var viewModel: AnimeViewModel
+    @State private var fullAnime: Anime? = nil  // Loaded later
+    @State private var isLoading = false
     @State private var localEpisode: Int
 
     init(anime: Anime) {
@@ -22,10 +24,11 @@ struct AnimeDetailView: View {
     var isPreview: Bool {
             ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
         }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                KFImage(URL(string: anime.imageUrl))
+                KFImage(URL(string: (fullAnime ?? anime).imageUrl))
                             .resizable()
                             .placeholder {
                                 ProgressView()
@@ -33,40 +36,39 @@ struct AnimeDetailView: View {
                             .aspectRatio(contentMode: .fit)
                             .cornerRadius(12)
                 
-                Text(anime.title)
+                Text((fullAnime ?? anime).title)
                     .font(.title)
                     .bold()
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    if let episodes = anime.episodes {
+                    if let episodes = (fullAnime ?? anime).episodes {
                         Text("Episodes: \(episodes)")
                     }
 
-                    if let score = anime.averageScore {
+                    if let score = (fullAnime ?? anime).averageScore {
                         Text("Score: \(String(format: "%.2f", score))/100")
                     }
 
-                    Text("Genres: \(anime.genres.joined(separator: ", "))")
-                    Text("Studio: \(anime.studio)")
+                    Text("Genres: \((fullAnime ?? anime).genres.joined(separator: ", "))")
+                    Text("Studio: \((fullAnime ?? anime).studio)")
 
-                    if let year = anime.seasonYear {
+                    if let year = (fullAnime ?? anime).seasonYear {
                         Text("Year: \(String(year))")
                     }
 
-                    if let trailer = anime.trailerUrl {
-                        Link(destination: URL(string: trailer)!) {
-                            Text("▶ Watch Trailer")
-                                .fontWeight(.semibold)
-                                .padding(8)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(8)
-                        }
+                    if let trailer = (fullAnime ?? anime).trailerUrl {
+                        Link("▶ Watch Trailer", destination: URL(string: trailer)!)
+                            .fontWeight(.semibold)
+                            .padding(8)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(8)
                     }
                 }
                 .font(.subheadline)
                 Divider()
 
-                Text(stripHTML(from: anime.description))
+                let desc = (fullAnime ?? anime).description
+                Text(stripHTML(from: desc.isEmpty ? "No description available." : desc))
                     .font(.body)
                 
                 Divider()
@@ -89,6 +91,17 @@ struct AnimeDetailView: View {
         }
         .navigationTitle(anime.title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if fullAnime == nil && !isLoading {
+                isLoading = true
+                Task {
+                    if let fetched = await viewModel.fetchAnimeDetails(id: anime.id) {
+                        fullAnime = fetched
+                    }
+                    isLoading = false
+                }
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 if viewModel.isInWatchlist(anime) {
