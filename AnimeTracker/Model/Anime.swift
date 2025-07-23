@@ -25,7 +25,7 @@ struct Anime: Identifiable, Equatable, Codable {
     var seasonYear: Int?
     var trailerUrl: String?
     var watchStatus: WatchStatus = .notStarted
-    var currentEpisode: Int = 1
+    var currentEpisode: Int = 0
     var personalRating: Double = 0.0
     
     init(from jikan: JikanAnime) {

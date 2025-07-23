@@ -12,6 +12,8 @@ struct AnimeDiscover: View {
     @State private var searchText = ""
     @ObservedObject var viewModel = DiscoverViewModel()
     @State private var results: [Anime] = []
+    @State private var selectedGenre: String = "Action"
+    @State private var genreResults: [Anime] = []
 
     var body: some View {
         Group {
@@ -22,8 +24,6 @@ struct AnimeDiscover: View {
                         DiscoverSection(title: "Now Airing", animeList: viewModel.nowAiring)
                         DiscoverSection(title: "Upcoming", animeList: viewModel.upcoming)
                         DiscoverSection(title: "Top Rated", animeList: viewModel.topRated)
-                        
-                        // Add more sections as needed
                     }
                     .padding(.top)
                 }

@@ -10,18 +10,28 @@ struct MainView: View {
     var body: some View {
         TabView {
             NavigationView {
-                AnimeDiscover()
-            }
-            .tabItem {
-                Label("Search", systemImage: "magnifyingglass")
-            }
-
-            NavigationView {
                 WatchlistView()
             }
             .tabItem {
                 Label("Watchlist", systemImage: "list.star")
             }
+            
+            NavigationView {
+                AnimeDiscover()
+            }
+            .tabItem {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+            
+            NavigationView {
+                GenreSearchView()
+            }
+            .tabItem {
+                Label("Search by Genre", systemImage: "book.pages")
+            }
+            
+            
+            
         }
     }
 }
