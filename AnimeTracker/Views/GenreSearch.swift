@@ -37,32 +37,34 @@ struct GenreSearchView: View {
             ScrollView {
                 LazyVStack {
                     ForEach(viewModel.genreAnime) { anime in
-                        HStack(alignment: .top, spacing: 12){
-                            AsyncImage(url: URL(string: anime.imageUrl)) { phase in
-                                if let image = phase.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                } else {
-                                    Color.gray
+                        NavigationLink(destination: AnimeDetailView(anime: anime)) {
+                            HStack(alignment: .top, spacing: 12){
+                                AsyncImage(url: URL(string: anime.imageUrl)) { phase in
+                                    if let image = phase.image {
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } else {
+                                        Color.gray
+                                    }
                                 }
+                                .frame(width: 50, height: 70)
+                                .cornerRadius(6)
+                                .clipped()
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(anime.title)
+                                        .font(.headline)
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.leading)
+                                    Text("Score: \(anime.averageScore != nil ? String(format: "%.1f", anime.averageScore!) : "N/A")")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
                             }
-                            .frame(width: 50, height: 70)
-                            .cornerRadius(6)
-                            .clipped()
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(anime.title)
-                                    .font(.headline)
-                                    .lineLimit(2)
-                                    .multilineTextAlignment(.leading)
-                                Text("Score: \(anime.averageScore != nil ? String(format: "%.1f", anime.averageScore!) : "N/A")")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
 //
 
                         // Infinite scroll trigger
@@ -81,9 +83,10 @@ struct GenreSearchView: View {
                     }
                 }
             }
+            .navigationTitle("Search by Genre")
         }
         .padding()
-        .navigationTitle("Search by Genre")
+        
     }
 }
 
