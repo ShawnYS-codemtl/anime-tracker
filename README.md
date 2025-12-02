@@ -26,3 +26,6 @@ A SwiftUI-based iOS app that allows anime fans to **search**, **discover**, and 
 🧪 Implemented robust **error handling** for API rate limits and JSON decoding.
 
 📱 Tested and deployed on a real iPhone device via **Xcode** and the **Apple Developer Program**.
+
+<img src="/IMG_5436.PNG" width="300" /> <img src="/IMG_5437.PNG" width="300" /> <img src="/IMG_5438.PNG" width="300" />
+
